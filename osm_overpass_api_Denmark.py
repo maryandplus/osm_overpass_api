@@ -126,6 +126,7 @@ else:
         for j in range(len(dataset[i]['elements'])):
 
             feature = {}
+            feature["type"] = "Feature"
             feature["geometry"] = {}
             feature["geometry"]["type"] = "Point"
             feature["geometry"]["coordinates"] =dataset[i]['elements'][j]['lon'],dataset[i]['elements'][j]['lat']
