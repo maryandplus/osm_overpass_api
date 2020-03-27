@@ -177,5 +177,5 @@ else:
             geojson["features"].append(feature)
 
     #specify directory for saving geojson
-    with open(os.path.join(r'C:\Users\xxxxXXXXxxxx','osm_denmark_retail.geojson'), 'w') as fp:
+    with open(os.path.join(r'C:\Users\xxxxXXXXxxxx','osm_denmark_landuse.geojson'), 'w') as fp:
         json.dump(geojson, fp)
