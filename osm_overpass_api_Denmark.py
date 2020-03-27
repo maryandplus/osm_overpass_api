@@ -106,6 +106,28 @@ try:
     
     
     offline()
+    overpass_query = """[out:json];area["ISO3166-1"="DK"][admin_level=2]->.searchArea;(node["place"="square"](area.searchArea););out center;"""
+    response = requests.get(overpass_url,params={'data': overpass_query})
+    data_squares = response.json()
+    print('data_squares',data_squares)
+    
+    
+    offline()
+    
+    overpass_query = """[out:json];area["ISO3166-1"="DK"][admin_level=2]->.searchArea;(node["leisure"="park"](area.searchArea););out center;"""
+    response = requests.get(overpass_url,params={'data': overpass_query})
+    data_parks = response.json()
+    print('data_parks',data_parks)
+    
+    
+    offline()
+    
+    overpass_query = """[out:json];area["ISO3166-1"="DK"][admin_level=2]->.searchArea;(node["railway"="station"](area.searchArea););out center;"""
+    response = requests.get(overpass_url,params={'data': overpass_query})
+    data_stations = response.json()
+    print('data_stations',data_stations)
+    
+    
 
 except:
     print('Error downloading', overpass_query)
@@ -114,7 +136,7 @@ except:
 #if no error occured then create a geojson    
 else:
     #create a list of downloaded data 
-    dataset= [data_shops, data_bars, data_cafes, data_restaurants, data_pubs, data_banks, data_pharmacies, data_cinemas, data_nightclubs,data_theatres]
+    dataset= [data_shops, data_bars, data_cafes, data_restaurants, data_pubs, data_banks, data_pharmacies, data_cinemas, data_nightclubs,data_theatres,data_squares,data_parks,data_stations]
     
     geojson = {}
     geojson["type"] = "FeatureCollection"
@@ -133,20 +155,24 @@ else:
             feature["properties"] = {}
             feature["properties"]["ID"] = dataset[i]['elements'][j]['id']
 
-            #check if shop or amenity tag 
+            #check tags 
+    
             if 'amenity' in dataset[i]['elements'][j]['tags']:
                 feature["properties"]["type"] = dataset[i]['elements'][j]['tags']['amenity']
    
+            elif 'place' in dataset[i]['elements'][j]['tags']:
+                feature["properties"]["type"] = dataset[i]['elements'][j]['tags']['place']
+            
+            elif 'leisure' in dataset[i]['elements'][j]['tags']:
+                feature["properties"]["type"] = dataset[i]['elements'][j]['tags']['leisure']
+                
+            elif 'railway' in dataset[i]['elements'][j]['tags']:
+                feature["properties"]["type"] = dataset[i]['elements'][j]['tags']['railway']
+                
             else:
                 feature["properties"]["type"] = dataset[i]['elements'][j]['tags']['shop']
             
 
-            if 'name' in dataset[i]['elements'][j]['tags']:
-
-                feature["properties"]["name"] = dataset[i]['elements'][j]['tags']['name']
-  
-            else:
-                feature["properties"]["name"] = 'No_Name'
 
             geojson["features"].append(feature)
 
